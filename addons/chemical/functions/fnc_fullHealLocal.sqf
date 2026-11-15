@@ -22,6 +22,7 @@ _patient setVariable [QGVAR(gasmask_durability), 10, true];
 _patient setVariable [QGVAR(CSGas), 0, true];
 _patient setVariable [QGVAR(airPoisoning), false, true];
 _patient setVariable [QGVAR(infectionTime), missionNamespace getVariable [QGVAR(chlorine_onsetTime), 60], true];
+_patient setVariable [QGVAR(chlorineLastTick), -1e9, true];
 _patient setVariable [QGVAR(infectionArray), [], true];
 _patient setVariable [QGVAR(CoughCooldown), false, true];
 
@@ -32,6 +33,9 @@ _patient setVariable [QGVAR(smelledGases), [], true];
 _patient setVariable [QGVAR(nerveAgentExposure), "", true];
 _patient setVariable [QGVAR(chemicalContamination), "", true];
 _patient setVariable [QGVAR(phosgeneDose), 0, true];
+_patient setVariable [QGVAR(lungDose), 0, true];
+_patient setVariable [QGVAR(lungDoseLastTick), -1e9, true];
+_patient setVariable [QGVAR(lungOnsetFired), false, true];
 _patient setVariable [QGVAR(phosgeneDeadline_onset), 0, true];
 _patient setVariable [QGVAR(mustardDeadline_eye), 0, true];
 _patient setVariable [QGVAR(mustardDeadline_burn), 0, true];

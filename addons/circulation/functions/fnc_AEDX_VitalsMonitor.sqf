@@ -63,8 +63,6 @@ if (_patient getVariable ["kat_AEDXPatient_PFH", -1] isEqualTo -1) then {
         private _pr = 0;
         private _bp = [0,0];
         private _spO2 = 0;
-        private _etco2 = 0;
-        private _breathrate = 0;
 
         private _hasEtco2Monitor = ["_HasEtco2Monitor",""] select (_patient getVariable [QEGVAR(breathing,etco2Monitor),[]] isEqualTo []); //check for etco2 monitoring apparatus
         _hasEtco2Monitor = ["",_hasEtco2Monitor] select (EGVAR(breathing,Etco2_Enabled)); //check etco2 monitoring is enabled
@@ -94,7 +92,7 @@ if (_patient getVariable ["kat_AEDXPatient_PFH", -1] isEqualTo -1) then {
         } else {
             _spO2 = GET_KAT_SPO2(_patient);
         };
-        
+
         private _etco2 = GET_ETCO2(_patient);
         private _breathrate = GET_BREATHING_RATE(_patient);
 
@@ -135,7 +133,8 @@ if (_patient getVariable [QGVAR(DefibrillatorPads_Connected), false] && {((_pati
             params ["_args", "_idPFH"];
             _args params ["_patient"];
 
-            private _soundSource = (_patient getVariable [QGVAR(Defibrillator_Provider), [objNull, -1, -1]]) select 0;
+            private _provider = _patient getVariable [QGVAR(Defibrillator_Provider), [objNull, -1, -1]];
+            private _soundSource = [_patient, _provider select 0] select ((_provider select 1) isEqualTo 1);
 
             if (!(_patient getVariable [QGVAR(DefibrillatorPads_Connected), false])) exitWith {
                 _patient setVariable ["kat_AEDXPatient_HR_PFH", nil, true];
@@ -177,7 +176,8 @@ if (_patient getVariable [QGVAR(DefibrillatorPads_Connected), false] && {((_pati
             params ["_args", "_idPFH"];
             _args params ["_patient"];
 
-            private _soundSource = (_patient getVariable [QGVAR(Defibrillator_Provider), [objNull, -1, -1]]) select 0;
+            private _provider = _patient getVariable [QGVAR(Defibrillator_Provider), [objNull, -1, -1]];
+            private _soundSource = [_patient, _provider select 0] select ((_provider select 1) isEqualTo 1);
 
             if (!(_patient getVariable [QGVAR(DefibrillatorPads_Connected), false])) exitWith {
                 _patient setVariable ["kat_AEDXPatient_HR_PFH", nil, true];
@@ -278,7 +278,12 @@ if (_patient getVariable [QGVAR(AED_X_VitalsMonitor_Connected), false] && {(_pat
         params ["_args", "_idPFH"];
         _args params ["_patient"];
 
-        private _soundSource = (_patient getVariable [QGVAR(Defibrillator_Provider), [objNull, -1, -1]]) select 0;
+        private _provider = if (_patient getVariable [QGVAR(DefibrillatorPads_Connected), false]) then {
+            _patient getVariable [QGVAR(Defibrillator_Provider), [objNull, -1, -1]]
+        } else {
+            _patient getVariable [QGVAR(AED_X_VitalsMonitor_Provider), [objNull, -1, -1]]
+        };
+        private _soundSource = [_patient, _provider select 0] select ((_provider select 1) isEqualTo 1);
 
         if !(_patient getVariable [QGVAR(AED_X_VitalsMonitor_Connected), false]) exitWith {
             _patient setVariable ["kat_AEDXPatient_PulseOx_PFH", nil, true];
